@@ -18,7 +18,7 @@
 #include <mach/atmega_microp.h>
 #include <mach/drv_callback.h>
 
-#include "board-buzz.h"
+#include "board-mega.h"
 
 static struct i2c_client *buzz_microp_client;
 

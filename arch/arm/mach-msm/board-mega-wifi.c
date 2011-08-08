@@ -11,7 +11,7 @@
 #include <linux/skbuff.h>
 #include <linux/wifi_tiwlan.h>
 
-#include "board-buzz.h"
+#include "board-mega.h"
 
 int buzz_wifi_power(int on);
 int buzz_wifi_reset(int on);
@@ -132,7 +132,7 @@ static int __init buzz_wifi_init(void)
 {
 	int ret;
 
-	if (!machine_is_buzz())
+	if (!machine_is_mega())
 		return 0;
 
 	printk("%s: start\n", __func__);

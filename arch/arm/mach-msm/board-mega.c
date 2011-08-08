@@ -24,7 +24,6 @@
 #include <linux/switch.h>
 #include <linux/atmel_qt602240.h>
 #include <linux/synaptics_i2c_rmi.h>
-#include <linux/akm8973.h>
 #include <linux/bma150.h>
 #include <linux/capella_cm3602.h>
 #include <linux/sysdev.h>
@@ -59,8 +58,7 @@
 
 #include <asm/mach/mmc.h>
 #include <linux/mmc/sdio_ids.h>
-#include <linux/curcial_oj.h>
-#include "board-buzz.h"
+#include "board-mega.h"
 #include "proc_comm.h"
 #include "gpio_chip.h"
 
@@ -84,6 +82,7 @@
 void msm_init_irq(void);
 void msm_init_gpio(void);
 void msm_init_pmic_vibrator(void);
+void kgsl_boot_reset(void);
 void config_buzz_camera_on_gpios(void);
 void config_buzz_camera_off_gpios(void);
 #ifdef CONFIG_MICROP_COMMON
@@ -93,6 +92,44 @@ static int buzz_phy_init_seq[] = {0x2C, 0x31, 0x20, 0x32, 0x1, 0x0D, 0x1, 0x10, 
 #define HSUSB_API_INIT_PHY_PROC	2
 #define HSUSB_API_PROG		0x30000064
 #define HSUSB_API_VERS MSM_RPC_VERS(1, 1)
+
+///////////////////////////////////////////////////////////////////
+// Schlund: debug function
+static int io_already_inited;
+
+void mega_check_debug(void)
+{
+	if (!io_already_inited) return;
+
+	if (!(*(volatile uint32_t*)(MSM_GPIO2_BASE + 0xC20) & 0x10))
+	{            
+	    while (1) 
+	    {
+		*(volatile uint32_t*)(MSM_GPIO2E_BASE + 0x504) |=  0x200; // AARM
+		*(volatile uint32_t*)(MSM_GPIO2_BASE  + 0xC08) |=  0x200; // OUT
+		*(volatile uint32_t*)(MSM_GPIO2_BASE  + 0xC00) &= ~0x200; // LOW
+            }
+	}		
+}
+
+static void sdc1_boot_reset(void)
+{
+	volatile uint32_t* sdc1_clk = MSM_CLK_CTL_BASE + 0x214;
+
+	*sdc1_clk |= (1 << 9);
+   	mdelay(1);
+	*sdc1_clk &= ~(1 << 9);
+}
+
+
+// stub function for now
+int mega_is_nand_boot(void)
+{
+	return 0;
+}
+
+///////////////////////////////////////////////////////////////////
+
 
 static void buzz_phy_reset(void)
 {
@@ -241,11 +278,6 @@ static struct microp_function_config microp_functions[] = {
 		.category = MICROP_FUNCTION_RESET_INT,
 		.int_pin = 1 << 8,
 	},
-	{
-	.name   = "oj",
-	.category = MICROP_FUNCTION_OJ,
-	.int_pin = 1 << 12,
-	},
 };
 
 static struct microp_function_config microp_lightsensor = {
@@ -378,7 +410,7 @@ static struct microp_i2c_platform_data microp_data = {
 	.num_devices = ARRAY_SIZE(microp_devices),
 	.microp_devices = microp_devices,
 	.gpio_reset = BUZZ_GPIO_UP_RESET_N,
-	.spi_devices = SPI_OJ | SPI_GSENSOR,
+	.spi_devices = SPI_GSENSOR,
 };
 
 static struct microp_i2c_platform_data microp_data_xc = {
@@ -387,7 +419,7 @@ static struct microp_i2c_platform_data microp_data_xc = {
 	.num_devices = ARRAY_SIZE(microp_devices_xc),
 	.microp_devices = microp_devices_xc,
 	.gpio_reset = BUZZ_GPIO_UP_RESET_N,
-	.spi_devices = SPI_OJ | SPI_GSENSOR,
+	.spi_devices = SPI_GSENSOR,
 };
 
 static struct i2c_board_info i2c_microp_devices = {
@@ -466,13 +498,6 @@ static struct platform_device msm_camera_sensor_s5k4e1gx = {
 	.dev       = {
 		.platform_data = &msm_camera_sensor_s5k4e1gx_data,
 	},
-};
-
-static struct akm8973_platform_data compass_platform_data = {
-	.layouts = BUZZ_LAYOUTS,
-	.project_name = BUZZ_PROJECT_NAME,
-	.reset = BUZZ_GPIO_COMPASS_RST_N,
-	.intr = BUZZ_GPIO_COMPASS_INT_N,
 };
 
 static int buzz_ts_atmel_power(int on)
@@ -625,14 +650,6 @@ static struct i2c_board_info i2c_devices[] = {
 	{
 		I2C_BOARD_INFO("s5k4e1gx", 0x20 >> 1),   /*5M bayer sensor*/
 		.platform_data = &msm_camera_device_data,
-	},
-};
-
-static struct i2c_board_info i2c_sensor[] = {
-	{
-		I2C_BOARD_INFO(AKM8973_I2C_NAME, 0x1C),
-		.platform_data = &compass_platform_data,
-		.irq = MSM_GPIO_TO_INT(BUZZ_GPIO_COMPASS_INT_N),
 	},
 };
 
@@ -844,101 +861,7 @@ static struct platform_device capella_cm3602 = {
 };
 
 /* End Proximity Sensor (Capella_CM3602)*/
-#define CURCIAL_OJ_MOTION            39
-static void curcial_oj_shutdown (int	enable)
-{
-	uint8_t cmd[3];
-	static uint32_t oj_motion_on[] = {
-		PCOM_GPIO_CFG(CURCIAL_OJ_MOTION, 0, GPIO_INPUT,
-						GPIO_PULL_UP, GPIO_2MA),
-	};
-	static uint32_t oj_motion_off[] = {
-		PCOM_GPIO_CFG(CURCIAL_OJ_MOTION, 0, GPIO_OUTPUT,
-						GPIO_PULL_DOWN, GPIO_2MA),
-	};
 
-	memset(cmd, 0, sizeof(uint8_t)*3);
-
-	cmd[2] = 0x80;
-	if (enable) {
-	/*keep O(L) enable by HW*/
-		/*microp_i2c_write(0x91, cmd, 3);*/
-		config_gpio_table(oj_motion_off, ARRAY_SIZE(oj_motion_off));
-	} else {
-		/*microp_i2c_write(0x90, cmd, 3);*/
-		config_gpio_table(oj_motion_on, ARRAY_SIZE(oj_motion_on));
-	}
-
-}
-static int curcial_oj_poweron(int on)
-{
-/*
-	gpio_set_value(CURCIAL_OJ_POWER, on);
-
-	if (gpio_get_value(CURCIAL_OJ_POWER) != on) {
-		printk(KERN_ERR "%s:OJ:power status fail \n", __func__);
-		return 0;
-	}
-	*/
-		printk(KERN_ERR "%s:OJ:power status ok \n", __func__);
-	return 1;
-}
-#define BUZZ_MICROP_VER	0x05
-static void curcial_oj_adjust_xy(uint8_t *data, int16_t *mSumDeltaX, int16_t *mSumDeltaY)
-{
-	int8_t 	deltaX;
-	int8_t 	deltaY;
-
-
-	if (data[2] == 0x80)
-		data[2] = 0x81;
-	if (data[1] == 0x80)
-		data[1] = 0x81;
-	if (0) {
-		deltaX = (-1)*((int8_t) data[2]); /*X=2*/
-		deltaY = (-1)*((int8_t) data[1]); /*Y=1*/
-	} else {
-		deltaX = (1)*((int8_t) data[1]);
-		deltaY = (1)*((int8_t) data[2]);
-	}
-	*mSumDeltaX += -((int16_t)deltaX);
-	*mSumDeltaY += -((int16_t)deltaY);
-}
-
-static struct curcial_oj_platform_data buzz_oj_data = {
-	.oj_poweron = curcial_oj_poweron,
-	.oj_shutdown = curcial_oj_shutdown,
-	.oj_adjust_xy = curcial_oj_adjust_xy,
-	.microp_version = BUZZ_MICROP_VER,
-	.mdelay_time = 0,
-	.normal_th = 10,
-	.xy_ratio = 15,
-	.interval = 0,
-	.swap = true,
-	.x = -1,
-	.y = -1,
-	.share_power = true,
-	.debugflag = 0,
-	.ap_code = true,
-	.sht_tbl = {0, 1000, 1250, 1500, 1750, 2000, 3000},
-	.pxsum_tbl = {0, 0, 90, 100, 110, 120, 130},
-	.degree = 7,
-	.Xsteps = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-		10, 10, 10, 10, 10, 9, 9, 9, 9, 9,
-		9, 9, 9, 9, 9, 9, 9, 9, 9, 9},
-	.Ysteps = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-		10, 10, 10, 10, 10, 9, 9, 9, 9, 9,
-		9, 9, 9, 9, 9, 9, 9, 9, 9, 9},
-	.irq = MSM_uP_TO_INT(12),
-};
-
-static struct platform_device buzz_oj = {
-	.name = CURCIAL_OJ_NAME,
-	.id = -1,
-	.dev = {
-		.platform_data	= &buzz_oj_data,
-	}
-};
 static void config_buzz_flashlight_gpios(void)
 {
 	static uint32_t buzz_flashlight_gpio_table[] = {
@@ -1012,7 +935,14 @@ MODULE_PARM_DESC(bt_fw_version, "BT's fw version");
 
 static void buzz_reset(void)
 {
-	gpio_set_value(BUZZ_GPIO_PS_HOLD, 0);
+	while (1)
+	{
+	  *(volatile uint32_t*)(MSM_GPIO2E_BASE + 0x504) |=  0x200; // AARM
+	  *(volatile uint32_t*)(MSM_GPIO2_BASE  + 0xC08) |=  0x200; // OUT
+	  *(volatile uint32_t*)(MSM_GPIO2_BASE  + 0xC00) &= ~0x200; // LOW
+	}
+
+//	gpio_set_value(BUZZ_GPIO_PS_HOLD, 0);
 }
 
 static uint32_t proximity_on_gpio_table[] = {
@@ -1173,8 +1103,12 @@ static void __init buzz_init(void)
 	int rc;
 	struct kobject *properties_kobj;
 
-	printk("buzz_init() revision=%d\n", system_rev);
+	printk("mega_init() revision=%d\n", system_rev);
 	printk(KERN_INFO "mfg_mode=%d\n", board_mfg_mode());
+
+	// Schlund: fix for KGSL run from haret
+	kgsl_boot_reset();
+	sdc1_boot_reset();
 
 	/* for bcm */
 	bt_export_bd_address();
@@ -1251,10 +1185,6 @@ static void __init buzz_init(void)
 		i2c_microp_devices.platform_data = &microp_data_xc;
 		platform_device_register(&buzz_leds);
 	}
-	if (system_rev >= 4) {
-		platform_device_register(&buzz_oj);
-
-	}
 	i2c_register_board_info(0, &i2c_microp_devices, 1);
 
 	buzz_init_keypad();
@@ -1283,12 +1213,12 @@ static void __init buzz_map_io(void)
 	msm_clock_init();
 }
 
-MACHINE_START(BUZZ, "buzz")
+MACHINE_START(MEGA, "mega")
 #ifdef CONFIG_MSM_DEBUG_UART
 	.phys_io        = MSM_DEBUG_UART_PHYS,
 	.io_pg_offst    = ((MSM_DEBUG_UART_BASE) >> 18) & 0xfffc,
 #endif
-	.boot_params    = 0x02E00100,
+	.boot_params    = 0x00200100,
 	.fixup          = buzz_fixup,
 	.map_io         = buzz_map_io,
 	.init_irq       = buzz_init_irq,

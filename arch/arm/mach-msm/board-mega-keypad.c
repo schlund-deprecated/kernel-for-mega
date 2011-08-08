@@ -21,7 +21,7 @@
 #include <asm/gpio.h>
 #include <mach/vreg.h>
 
-#include "board-buzz.h"
+#include "board-mega.h"
 
 static int opt_x_axis_threshold = 1, opt_y_axis_threshold = 1;
 

@@ -25,7 +25,7 @@
 
 #include "gpio_chip.h"
 #include "proc_comm.h"
-#include "board-buzz.h"
+#include "board-mega.h"
 
 static struct rfkill *bt_rfk;
 static const char bt_name[] = "bcm4329";
@@ -374,7 +374,7 @@ static struct platform_driver buzz_rfkill_driver = {
 
 static int __init buzz_rfkill_init(void)
 {
-	if (!machine_is_buzz())
+	if (!machine_is_mega())
 		return 0;
 
 	return platform_driver_register(&buzz_rfkill_driver);

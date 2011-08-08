@@ -31,7 +31,7 @@
 #endif
 
 /* #include <mach/pmic.h> */
-#include "board-buzz.h"
+#include "board-mega.h"
 #include "proc_comm.h"
 #include "devices.h"
 

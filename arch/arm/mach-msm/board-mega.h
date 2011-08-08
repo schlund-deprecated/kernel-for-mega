@@ -114,4 +114,5 @@ unsigned buzz_engineerid(void);
 int buzz_is_3M_camera(void);
 int __init buzz_init_keypad(void);
 int __init buzz_panel_init(void);
+int mega_is_nand_boot(void);
 #endif /* GUARD */

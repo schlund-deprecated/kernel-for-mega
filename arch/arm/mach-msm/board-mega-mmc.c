@@ -29,7 +29,7 @@
 #include <asm/mach/mmc.h>
 
 #include "devices.h"
-#include "board-buzz.h"
+#include "board-mega.h"
 #include "proc_comm.h"
 
 /* #include <linux/irq.h> */

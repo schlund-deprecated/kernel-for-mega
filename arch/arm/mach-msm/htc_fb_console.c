@@ -62,7 +62,7 @@ extern int num_registered_fb;
 #endif
 
 /* Red message (color = 1), the reset color to white (color = 7) */
-#define HTC_FB_MSG		("\n\n" "\x1b" "1" "HTC HD Mini Linux framebuffer console" "\x1b" "7" "\n\n")
+#define HTC_FB_MSG		("\n\n" "\x1b" "1" "HTC Linux framebuffer console" "\x1b" "7" "\n\n")
 
 struct fb_para {
 	uint32_t htc_fb_lcd_width;
@@ -75,13 +75,13 @@ struct fb_para {
 } para;
 
 struct fb_para mega_para = {
- 	.htc_fb_lcd_width 	= 320,
-	.htc_fb_lcd_height 	= 480,
+ 	.htc_fb_lcd_width 	= 240,
+	.htc_fb_lcd_height 	= 320,
 	.htc_fb_phys 	 	= 0x00100000,
 	.htc_fb_off 	 	= 0x00000000,
 	.htc_fb_size 	 	= 0x000E0000,
-	.htc_fb_con_max_rows 	= 80,
-	.htc_fb_con_max_cols 	= 120,
+	.htc_fb_con_max_rows 	= 60,
+	.htc_fb_con_max_cols 	= 80,
 };
 
 struct fb_para photon_para = {

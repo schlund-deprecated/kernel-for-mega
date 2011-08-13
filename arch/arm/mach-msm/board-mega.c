@@ -1273,10 +1273,13 @@ static void __init buzz_fixup(struct machine_desc *desc, struct tag *tags,
 	mi->bank[1].size = MSM_LINUX_SIZE2;
 }
 
+int __init htc_fb_console_init(void);
+
 static void __init buzz_map_io(void)
 {
 	printk("buzz_init_map_io()\n");
 	msm_map_common_io();
+	htc_fb_console_init();
 	msm_clock_init();
 }
 

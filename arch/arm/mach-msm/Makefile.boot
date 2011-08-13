@@ -21,9 +21,9 @@ initrd_phys-y           := 0x19A00000
 endif
 
 ifeq ($(CONFIG_ARCH_MSM7225),y)
-  zreladdr-y            := 0x02E08000
-params_phys-y           := 0x02E00100
-initrd_phys-y           := 0x03E00000
+  zreladdr-y            := 0x00208000
+params_phys-y           := 0x00200100
+initrd_phys-y           := 0x00C00000
 endif
 
 ifeq ($(CONFIG_ARCH_MSM7227),y)

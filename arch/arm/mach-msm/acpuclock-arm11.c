@@ -211,6 +211,7 @@ static struct freq_tbl_map acpu_freq_tbl_list[] = {
 	TABLE_CONFIG(MEMPHIS, 72xx),
 	TABLE_CONFIG(PARADISE, 72xx),
 	TABLE_CONFIG(BUZZ, 72xx),
+	TABLE_CONFIG(MEGA, 72xx),
 	TABLE_CONFIG(BEE, 72xx),
 	TABLE_CONFIG(BUZZC, 72xx),
 	TABLE_CONFIG(HERO, 72xx),

@@ -46,6 +46,7 @@ static struct map_desc msm_io_desc[] __initdata = {
 	MSM_DEVICE(DMOV),
 	MSM_DEVICE(GPIO1),
 	MSM_DEVICE(GPIO2),
+	MSM_DEVICE(GPIO2E),
 	MSM_DEVICE(CLK_CTL),
 #ifdef CONFIG_ARCH_MSM7X30
 	MSM_DEVICE(CLK_CTL_SH2),
@@ -59,6 +60,7 @@ static struct map_desc msm_io_desc[] __initdata = {
 #endif
 	MSM_DEVICE(AD5),
 	MSM_DEVICE(MDC),
+	MSM_DEVICE(MDP),
 #ifdef CONFIG_ARCH_MSM7X30
 	MSM_DEVICE(ACC),
 	MSM_DEVICE(SAW),

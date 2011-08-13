@@ -1710,7 +1710,7 @@ static int __init htc_battery_init(void)
 	return 0;
 }
 
-module_init(htc_battery_init);
+//module_init(htc_battery_init);
 MODULE_DESCRIPTION("HTC Battery Driver");
 MODULE_LICENSE("GPL");
 EXPORT_SYMBOL(htc_is_cable_in);

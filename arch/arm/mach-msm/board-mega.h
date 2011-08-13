@@ -16,24 +16,24 @@
 
 #include <mach/board.h>
 
-#define MSM_LINUX_BASE1                 0x02E00000
-#define MSM_LINUX_SIZE1                 0x0D200000
-#define MSM_LINUX_BASE2                 0x20000000
-#define MSM_LINUX_SIZE2                 0x07000000
+#define MSM_LINUX_BASE1                 0x00200000
+#define MSM_LINUX_SIZE1                 0x05700000
+#define MSM_LINUX_BASE2                 0x08000000
+#define MSM_LINUX_SIZE2                 0x08000000
 
-#define MSM_PMEM_MDP_BASE               0x00000000
-#define MSM_PMEM_MDP_SIZE               0x00800000
-
-#define MSM_FB_BASE                     0x02D00000
-#define MSM_FB_SIZE                     0x9b000
+#define MSM_FB_BASE                     0x00100000
+#define MSM_FB_SIZE                     0xE0000
 
 #define MSM_RAM_CONSOLE_BASE            MSM_FB_BASE + MSM_FB_SIZE
 #define MSM_RAM_CONSOLE_SIZE            128 * SZ_1K
 
-#define MSM_PMEM_ADSP_BASE              0x27000000
+#define MSM_PMEM_MDP_BASE               0x0E800000
+#define MSM_PMEM_MDP_SIZE               0x00800000
+
+#define MSM_PMEM_ADSP_BASE              0x0F000000
 #define MSM_PMEM_ADSP_SIZE              0x00800000
 
-#define MSM_PMEM_CAMERA_BASE            0x27800000
+#define MSM_PMEM_CAMERA_BASE            0x0F800000
 #define MSM_PMEM_CAMERA_SIZE            0x00800000
 
 #define BUZZ_GPIO_USB_ID_PIN          (19)

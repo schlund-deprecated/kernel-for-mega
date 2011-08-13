@@ -60,7 +60,6 @@ static struct map_desc msm_io_desc[] __initdata = {
 #endif
 	MSM_DEVICE(AD5),
 	MSM_DEVICE(MDC),
-	MSM_DEVICE(MDP),
 #ifdef CONFIG_ARCH_MSM7X30
 	MSM_DEVICE(ACC),
 	MSM_DEVICE(SAW),

@@ -112,8 +112,9 @@
 #define MSM_EMDH_PHYS         0xAA700000
 #define MSM_EMDH_SIZE         SZ_4K
 
+#define MSM_MDP_BASE		  IOMEM(0xF9200000)
 #define MSM_MDP_PHYS          0xAA200000
-#define MSM_MDP_SIZE          0x000F0000
+#define MSM_MDP_SIZE          SZ_1M
 
 #define MSM_MDC_BASE	      IOMEM(0xF8200000)
 #define MSM_MDC_PHYS	      0xAA500000

@@ -82,7 +82,6 @@
 void msm_init_irq(void);
 void msm_init_gpio(void);
 void msm_init_pmic_vibrator(void);
-void kgsl_boot_reset(void);
 void config_buzz_camera_on_gpios(void);
 void config_buzz_camera_off_gpios(void);
 #ifdef CONFIG_MICROP_COMMON
@@ -1106,8 +1105,6 @@ static void __init buzz_init(void)
 	printk("mega_init() revision=%d\n", system_rev);
 	printk(KERN_INFO "mfg_mode=%d\n", board_mfg_mode());
 
-	// Schlund: fix for KGSL run from haret
-	kgsl_boot_reset();
 	sdc1_boot_reset();
 
 	/* for bcm */
@@ -1178,7 +1175,6 @@ static void __init buzz_init(void)
 #ifdef CONFIG_USB_ANDROID
 	buzz_add_usb_devices();
 #endif
-	i2c_register_board_info(0, i2c_sensor, ARRAY_SIZE(i2c_sensor));
 	i2c_register_board_info(0, i2c_devices, ARRAY_SIZE(i2c_devices));
 
 	if (system_rev < 3) {

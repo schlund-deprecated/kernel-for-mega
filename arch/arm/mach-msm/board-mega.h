@@ -17,7 +17,7 @@
 #include <mach/board.h>
 
 #define MSM_LINUX_BASE1                 0x00200000
-#define MSM_LINUX_SIZE1                 0x05700000
+#define MSM_LINUX_SIZE1                 0x05600000
 #define MSM_LINUX_BASE2                 0x08000000
 #define MSM_LINUX_SIZE2                 0x08000000
 

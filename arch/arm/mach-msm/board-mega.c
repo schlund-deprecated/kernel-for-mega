@@ -1185,6 +1185,7 @@ static void __init buzz_init(void)
 
 	buzz_init_keypad();
 	buzz_panel_init();
+	msm_hsusb_set_vbus_state(1);
 }
 
 static void __init buzz_fixup(struct machine_desc *desc, struct tag *tags,

@@ -19,9 +19,9 @@
 #define MSM_LINUX_BASE1                 0x00200000
 #define MSM_LINUX_SIZE1                 0x05600000
 #define MSM_LINUX_BASE2                 0x08000000
-#define MSM_LINUX_SIZE2                 0x08000000
+#define MSM_LINUX_SIZE2                 0x06700000
 
-#define MSM_FB_BASE                     0x00100000
+#define MSM_FB_BASE                     0x0E700000
 #define MSM_FB_SIZE                     0xE0000
 
 #define MSM_RAM_CONSOLE_BASE            MSM_FB_BASE + MSM_FB_SIZE

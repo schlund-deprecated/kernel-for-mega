@@ -194,10 +194,12 @@ obj-$(CONFIG_MACH_HERO) += board-hero-mmc.o board-hero-wifi.o htc_wifi_nvs.o htc
 # MSM7225 boards
 obj-$(CONFIG_MACH_BUZZ) += board-buzz.o board-buzz-panel.o board-buzz-keypad.o board-buzz-microp.o
 obj-$(CONFIG_MACH_BUZZ) += board-buzz-rfkill.o board-buzz-mmc.o board-buzz-wifi.o
+
+obj-$(CONFIG_MACH_MEGA) += dmesg_log.o
+obj-$(CONFIG_MACH_MEGA) += htc_fb_console.o fonts.o font_pearl_8x8.o
 obj-$(CONFIG_MACH_MEGA) += board-mega.o board-mega-panel.o board-mega-keypad.o board-mega-microp.o
 obj-$(CONFIG_MACH_MEGA) += board-mega-rfkill.o board-mega-mmc.o board-mega-wifi.o
-#obj-$(CONFIG_MACH_MEGA) += dmesg_log.o
-obj-$(CONFIG_MACH_MEGA) += htc_fb_console.o fonts.o font_pearl_8x8.o
+
 obj-$(CONFIG_MACH_BEE) += board-bee.o board-bee-panel.o board-bee-keypad.o board-bee-microp.o
 obj-$(CONFIG_MACH_BEE) += board-bee-rfkill.o board-bee-mmc.o board-bee-wifi.o
 

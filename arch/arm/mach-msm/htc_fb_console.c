@@ -77,9 +77,9 @@ struct fb_para {
 struct fb_para mega_para = {
  	.htc_fb_lcd_width 	= 240,
 	.htc_fb_lcd_height 	= 320,
-	.htc_fb_phys 	 	= 0x00100000,
+	.htc_fb_phys 	 	= 0x0E600000,
 	.htc_fb_off 	 	= 0x00000000,
-	.htc_fb_size 	 	= 0x000E0000,
+	.htc_fb_size 	 	= 0x00100000,
 	.htc_fb_con_max_rows 	= 60,
 	.htc_fb_con_max_cols 	= 80,
 };
@@ -115,18 +115,18 @@ struct fb_para topaz_para = {
 };
 
 struct fb_para default_para = {
- 	.htc_fb_lcd_width 	= 480, 		/* LCD resolution width*/
-	.htc_fb_lcd_height 	= 640, 		/* LCD resolution height*/
-	.htc_fb_phys 	 	= 0x16800000, 	/* physical page for our fb */
-	.htc_fb_off 	 	= 0x0006a000, 	/* offset in the page to start of fb */
+ 	.htc_fb_lcd_width 	= 240, 		/* LCD resolution width*/
+	.htc_fb_lcd_height 	= 320, 		/* LCD resolution height*/
+	.htc_fb_phys 	 	= 0x0E600000, 	/* physical page for our fb */
+	.htc_fb_off 	 	= 0x00000000, 	/* offset in the page to start of fb */
 	.htc_fb_size 	 	= 0x00100000, 	/* map 1 MB (640 * 480 * 2 rounded properly) */
-	.htc_fb_con_max_rows 	= 120,		/* Set max console size for a 4x4 font */
-	.htc_fb_con_max_cols 	= 160,		/* Set max console size for a 4x4 font */
+	.htc_fb_con_max_rows 	= 60,		/* Set max console size for a 4x4 font */
+	.htc_fb_con_max_cols 	= 80,		/* Set max console size for a 4x4 font */
 };
 
 /* Framebuffer stuff */
 //after splhood base!
-#define HTC_FB_BASE		0xF9400000 /* virtual page for our fb */
+#define HTC_FB_BASE		0xF9500000 /* virtual page for our fb */
 /* Pack color data in 565 RGB format; r and b are 5 bits, g is 6 bits */
 #define HTC_FB_RGB(r, g, b) 	((((r) & 0x1f) << 11) | (((g) & 0x3f) << 5) | (((b) & 0x1f) << 0))
 
